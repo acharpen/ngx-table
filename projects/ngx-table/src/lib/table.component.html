@@ -1,0 +1,155 @@
+<div #table class="oo-table oo-table-line-divisions">
+  <div #caption class="oo-table-caption oo-table-sticky" *ngIf="captionTemplate">
+    <ng-container
+      [ngTemplateOutlet]="captionTemplate"
+      [ngTemplateOutletContext]="{ selection: selection }"
+    ></ng-container>
+  </div>
+
+  <div #toolbar class="oo-table-sticky oo-table-toolbar" *ngIf="dataSource.showGlobalFilter || controlsTemplate">
+    <oo-ngx-table-global-filter *ngIf="dataSource.showGlobalFilter"></oo-ngx-table-global-filter>
+
+    <div class="oo-table-controls" *ngIf="controlsTemplate">
+      <ng-container
+        [ngTemplateOutlet]="controlsTemplate"
+        [ngTemplateOutletContext]="{ selection: selection }"
+      ></ng-container>
+    </div>
+  </div>
+
+  <div #tableHeader class="oo-table-header oo-table-sticky">
+    <div #tableHeaderRow class="oo-table-row">
+      <div class="oo-table-cell oo-table-cell-select oo-table-sticky" *ngIf="isMultiSelectionMode">
+        <div class="oo-table-checkbox" (click)="onClickTableHeaderCheckbox()"></div>
+      </div>
+      <div class="oo-table-cell oo-table-cell-select oo-table-sticky" *ngIf="isSingleSelectionMode">
+        <div></div>
+      </div>
+
+      <div class="oo-table-cell" [ngClass]="column.cssClassName" *ngFor="let column of columns; let i = index">
+        <div
+          class="oo-table-cell-content oo-table-truncate"
+          (click)="onClickTableHeaderCellContent(column)"
+          *ngIf="column.headerCell"
+        >
+          <ng-container [ngTemplateOutlet]="column.headerCell.template"></ng-container>
+        </div>
+
+        <div class="oo-table-sort-btns" *ngIf="column.sortable">
+          <span
+            class="oo-table-sort-btn oo-table-sort-btn-asc"
+            [ngClass]="{ 'oo-table-active': column.sortOrder === 'asc' }"
+            (click)="onClickTableHeaderSortBtn(column, 'asc')"
+          ></span>
+          <span
+            class="oo-table-sort-btn oo-table-sort-btn-desc"
+            [ngClass]="{ 'oo-table-active': column.sortOrder === 'desc' }"
+            (click)="onClickTableHeaderSortBtn(column, 'desc')"
+          ></span>
+        </div>
+
+        <div
+          class="oo-table-menu-btn"
+          [ngClass]="{ 'oo-table-active': columnContextMenuOverlayData?.columnName === column.name }"
+          (click)="onClickColumnContextMenu($event, column)"
+          *ngIf="showColumnContextMenu"
+        >
+          <span></span><span></span><span></span>
+        </div>
+
+        <div columnResize class="oo-table-resize-handle" [column]="column" *ngIf="column.resizable"></div>
+      </div>
+
+      <div class="oo-table-cell oo-table-sticky" *ngIf="rowQuickActionTemplate"></div>
+
+      <div class="oo-table-cell oo-table-sticky" *ngIf="rowContextMenuTemplate"></div>
+    </div>
+  </div>
+
+  <div #viewport>
+    <div #content class="oo-table-content">
+      <div #tableBody class="oo-table-body">
+        <div #tableBodyRows class="oo-table-row" (click)="onClickTableBodyRow(node)" *ngFor="let node of visibleNodes">
+          <div class="oo-table-cell oo-table-cell-select oo-table-sticky" *ngIf="isMultiSelectionMode">
+            <div class="oo-table-checkbox" [ngClass]="{ 'oo-table-checkbox-checked': node?.isSelected }"></div>
+          </div>
+          <div class="oo-table-cell oo-table-cell-select oo-table-sticky" *ngIf="isSingleSelectionMode">
+            <div class="oo-table-radio" [ngClass]="{ 'oo-table-radio-checked': node?.isSelected }"></div>
+          </div>
+
+          <div class="oo-table-cell" [ngClass]="column.cssClassName" *ngFor="let column of columns">
+            <div class="oo-table-cell-content oo-table-truncate">
+              <ng-container
+                [ngTemplateOutlet]="column.cell.template"
+                [ngTemplateOutletContext]="{ $implicit: node.value }"
+              ></ng-container>
+            </div>
+          </div>
+
+          <div class="oo-table-cell oo-table-row-quick-action oo-table-sticky" *ngIf="rowQuickActionTemplate">
+            <ng-container
+              [ngTemplateOutlet]="rowQuickActionTemplate"
+              [ngTemplateOutletContext]="{ $implicit: node.value }"
+            ></ng-container>
+          </div>
+
+          <div class="oo-table-cell oo-table-row-context-menu oo-table-sticky" *ngIf="rowContextMenuTemplate">
+            <div
+              class="oo-table-menu-btn"
+              [ngClass]="{ 'oo-table-active': rowContextMenuOverlayData?.nodeId === node.id }"
+              (click)="onClickRowContextMenu($event, node)"
+            >
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="visibleNodes.length === 0">
+    <div class="oo-table-empty" [ngStyle]="{ 'min-height': rowHeightPx }" *ngIf="nodes.length === 0">
+      <div *ngIf="emptyTemplate; else emptyMessageBlock">
+        <ng-container *ngTemplateOutlet="emptyTemplate"></ng-container>
+      </div>
+      <ng-template #emptyMessageBlock>
+        <div class="oo-table-empty-message">{{ emptyMessagelabel }}</div>
+      </ng-template>
+    </div>
+
+    <div class="oo-table-empty" [ngStyle]="{ 'min-height': rowHeightPx }" *ngIf="nodes.length > 0">
+      <div *ngIf="emptyFilterTemplate; else emptyFilterMessageBlock">
+        <ng-container *ngTemplateOutlet="emptyFilterTemplate"></ng-container>
+      </div>
+      <ng-template #emptyFilterMessageBlock>
+        <div class="oo-table-empty-message">{{ emptyFilterMessagelabel }}</div>
+      </ng-template>
+    </div>
+  </ng-container>
+
+  <div #tableFooter class="oo-table-footer oo-table-sticky" *ngIf="hasFooterRow">
+    <div #tableFooterRow class="oo-table-row">
+      <div
+        class="oo-table-cell oo-table-cell-select oo-table-sticky"
+        *ngIf="isMultiSelectionMode || isSingleSelectionMode"
+      ></div>
+
+      <div class="oo-table-cell" [ngClass]="column.cssClassName" *ngFor="let column of columns">
+        <div class="oo-table-cell-content oo-table-truncate">
+          <ng-container [ngTemplateOutlet]="column.footerCell.template" *ngIf="column.footerCell"></ng-container>
+        </div>
+      </div>
+
+      <div class="oo-table-cell oo-table-sticky" *ngIf="rowQuickActionTemplate"></div>
+
+      <div class="oo-table-cell oo-table-sticky" *ngIf="rowContextMenuTemplate"></div>
+    </div>
+  </div>
+
+  <div #summary class="oo-table-sticky oo-table-summary" *ngIf="summaryTemplate">
+    <ng-container
+      [ngTemplateOutlet]="summaryTemplate"
+      [ngTemplateOutletContext]="{ selection: selection }"
+    ></ng-container>
+  </div>
+</div>

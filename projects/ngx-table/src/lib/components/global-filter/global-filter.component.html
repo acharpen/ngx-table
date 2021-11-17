@@ -1,0 +1,8 @@
+<ng-container [formGroup]="form">
+  <input
+    class="oo-table-global-filter"
+    formControlName="searchText"
+    placeholder="{{ searchLabel }}"
+    (keyup)="tableService.search(form.value.searchText)"
+  />
+</ng-container>
