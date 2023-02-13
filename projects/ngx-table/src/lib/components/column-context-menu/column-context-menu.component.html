@@ -1,0 +1,30 @@
+<div class="oo-table-overlay">
+  <ul class="oo-table-menu">
+    <li class="oo-table-menu-item oo-table-row-height-opts" *ngIf="showRowHeight">
+      <div
+        [ngClass]="{ 'oo-table-active': currRowHeight === rowHeights.condensed }"
+        (click)="rowHeightChange.emit(rowHeights.condensed)"
+      >
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div
+        [ngClass]="{ 'oo-table-active': currRowHeight === rowHeights.regular }"
+        (click)="rowHeightChange.emit(rowHeights.regular)"
+      >
+        <span></span><span></span><span></span>
+      </div>
+      <div
+        [ngClass]="{ 'oo-table-active': currRowHeight === rowHeights.relaxed }"
+        (click)="rowHeightChange.emit(rowHeights.relaxed)"
+      >
+        <span></span><span></span>
+      </div>
+    </li>
+
+    <li class="oo-table-menu-divider" *ngIf="showRowHeight && showColumnsSettings"></li>
+
+    <li class="oo-table-menu-item" (click)="columnsSettingsOpen.emit()" *ngIf="showColumnsSettings">
+      {{ customizeColumnsLabel }}
+    </li>
+  </ul>
+</div>

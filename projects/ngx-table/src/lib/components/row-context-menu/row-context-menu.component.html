@@ -1,0 +1,8 @@
+<div class="oo-table-overlay">
+  <ul class="oo-table-menu">
+    <ng-container
+      [ngTemplateOutlet]="template"
+      [ngTemplateOutletContext]="{ $implicit: item, overlay: handler }"
+    ></ng-container>
+  </ul>
+</div>

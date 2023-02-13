@@ -1,0 +1,28 @@
+<div class="oo-table-overlay oo-table-columns-settings">
+  <div class="oo-table-overlay-header">
+    {{ customizeColumnsLabel }}
+  </div>
+
+  <div class="oo-table-overlay-content">
+    <div cdkDropList class="oo-table-column-list" (cdkDropListDropped)="drop($event)">
+      <div cdkDrag class="oo-table-column-box" [cdkDragData]="columns" *ngFor="let column of columns">
+        <div
+          class="oo-table-checkbox"
+          [ngClass]="{
+            'oo-table-checkbox-checked': column.visible,
+            'oo-table-checkbox-disabled': column.visible && visibleColumnsCount === 1
+          }"
+          (click)="toggleColumn(column)"
+        ></div>
+
+        <span class="oo-table-column-name oo-table-truncate">{{ column.name }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="oo-table-overlay-footer">
+    <button class="oo-table-btn oo-table-btn-secondary" (click)="dialogClose.emit()">{{ cancelLabel }}</button>
+
+    <button class="oo-table-btn oo-table-btn-primary" (click)="columnsChange.emit(columns)">{{ saveLabel }}</button>
+  </div>
+</div>

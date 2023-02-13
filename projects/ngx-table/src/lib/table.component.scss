@@ -1,0 +1,82 @@
+$base-z-index: 2;
+
+:host {
+  display: block;
+
+  .oo-table,
+  .oo-table-body,
+  .oo-table-cell {
+    position: relative;
+  }
+
+  .oo-table,
+  .oo-table-body,
+  .oo-table-footer {
+    width: fit-content;
+  }
+
+  .oo-table-caption,
+  .oo-table-summary,
+  .oo-table-toolbar {
+    left: 0;
+  }
+
+  .oo-table-cell,
+  .oo-table-row {
+    box-sizing: border-box;
+  }
+
+  .oo-table-row-context-menu,
+  .oo-table-row-quick-action {
+    right: 0;
+  }
+
+  .oo-table {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: scroll;
+    will-change: scroll-position;
+  }
+
+  .oo-table-body {
+    contain: content;
+  }
+
+  .oo-table-caption {
+    top: 0;
+  }
+
+  .oo-table-cell-select {
+    left: 0;
+
+    &.oo-table-sticky {
+      z-index: calc(#{$base-z-index} + 1);
+    }
+  }
+
+  .oo-table-header {
+    display: inline-block;
+  }
+
+  .oo-table-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .oo-table-sticky {
+    position: sticky;
+    z-index: $base-z-index;
+  }
+
+  .oo-table-text-center .oo-table-cell-content {
+    text-align: center;
+  }
+
+  .oo-table-text-left .oo-table-cell-content {
+    text-align: left;
+  }
+
+  .oo-table-text-right .oo-table-cell-content {
+    text-align: right;
+  }
+}
